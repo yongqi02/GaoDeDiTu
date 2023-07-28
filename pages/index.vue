@@ -102,4 +102,8 @@ function handleClick(value: string) {
 .el-menu {
 	background-color: initial!important;
 }
+.cell-item {
+	display: flex;
+	align-items: center;
+}
 </style>
