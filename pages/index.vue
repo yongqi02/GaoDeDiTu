@@ -23,10 +23,18 @@ function handleClick(value: string) {
 
 <template>
 	<el-container>
-		<el-header class="bg-sky-950 h-16">
+		<el-header style="background-color: #001529;">
+			<div class="h-12">
+				<el-row>
+					<el-col>
+						<el-image style="height: 48px" src="logo.png" />
+					</el-col>
+					<el-col></el-col>
+				</el-row>
+			</div>
 		</el-header>
 		<el-container>
-			<el-aside width="200px" class="bg-sky-200">
+			<el-aside width="200px" style="height: calc(100vh - 48px)">
 				<client-only>
 					<el-menu
 							default-active='1'
@@ -90,22 +98,33 @@ function handleClick(value: string) {
 				</client-only>
 			</el-aside>
 			<el-container>
-				<el-main class="bg-sky-50 min-h-screen">
+				<el-main style="height: calc(100vh - 48px); background-color:#F0F2F5;">
 					<GeocodeGeo v-if="isShow === '1-1'"/>
 					<GeocodeRegeo v-if="isShow === '1-2'"/>
 				</el-main>
-				<el-footer class="bg-sky-600">Footer</el-footer>
 			</el-container>
 		</el-container>
 	</el-container>
 </template>
 
 <style scoped>
-.el-menu {
-	background-color: initial!important;
+:deep(.el-menu) {
+	background-color: initial;
 }
-.cell-item {
-	display: flex;
-	align-items: center;
+:deep(.el-header) {
+	height: initial;
+}
+:deep(.el-aside::-webkit-scrollbar) {
+	width: 6px;
+}
+:deep(.el-aside::-webkit-scrollbar-thumb) {
+	background: rgba(0,0,0,.12);
+	border-radius: 3px;
+	box-shadow: inset 0 0 5px rgba(0,21,41,.05);
+}
+:deep(.el-aside::-webkit-scrollbar-track) {
+	background: rgba(0,0,0,.06);
+	border-radius: 3px;
+	box-shadow: inset 0 0 5px rgba(0,21,41,.05);
 }
 </style>
