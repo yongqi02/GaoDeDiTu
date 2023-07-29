@@ -192,7 +192,7 @@ console.log(`isEmpty: ${isEmpty.value}`)
 								{{ scope.row.description }}
 								<div v-if="scope.row.name === 'info'">
 									详情可以
-									<el-button @click="infoDrawer = true" type="primary" size="small">查询</el-button>
+									<el-button @click="infoDrawer = true" size="small">查询</el-button>
 									info状态表
 								</div>
 							</div>
@@ -222,43 +222,6 @@ console.log(`isEmpty: ${isEmpty.value}`)
 			<el-text>交流QQ群：123456</el-text>
 		</el-space>
 	</div>
-
-<!--	<el-divider content-position="left">请求参数</el-divider>-->
-<!--	<client-only>-->
-<!--		<el-table :data="requestData" border style="width: 100%">-->
-<!--			<el-table-column prop="name" label="参数名" width="180" />-->
-<!--			<el-table-column prop="meaning" label="含义" width="180" />-->
-<!--			<el-table-column prop="description" label="描述" />-->
-<!--			<el-table-column prop="must" label="是否必填" width="180"/>-->
-<!--			<el-table-column prop="default" label="默认" width="180"/>-->
-<!--		</el-table>-->
-<!--	</client-only>-->
-<!--	<el-divider content-position="left">响应参数</el-divider>-->
-<!--	<client-only>-->
-<!--		<el-table :data="responseData" border style="width: 100%" row-key="id">-->
-<!--			<el-table-column prop="name" label="参数名" width="180" />-->
-<!--			<el-table-column prop="meaning" label="含义" width="180" />-->
-<!--			<el-table-column prop="description" label="描述">-->
-<!--				<template #default="scope">-->
-<!--					<div>-->
-<!--						{{ scope.row.description }}-->
-<!--						<el-button v-if="scope.row.name === 'info'" @click="infoDrawer = true">详情可以查询info状态表</el-button>-->
-<!--					</div>-->
-<!--				</template>-->
-<!--			</el-table-column>-->
-<!--		</el-table>-->
-<!--	</client-only>-->
-<!--	<el-divider content-position="left">在线测试</el-divider>-->
-<!--	<el-input-->
-<!--			v-model="url"-->
-<!--			class="input-with-select"-->
-<!--	>-->
-<!--		<template #append>-->
-<!--			<el-button :icon="Pointer" @click="handleClick"/>-->
-<!--		</template>-->
-<!--	</el-input>-->
-<!--	<el-empty description="暂无数据" v-if="isEmpty"/>-->
-<!--	<JsonVierer :data="data.data" v-if="!isEmpty" v-loading="isLoading"></JsonVierer>-->
 	<el-drawer v-model="infoDrawer" size="50%">
 		<template #header>
 			<h4>Info状态表</h4>

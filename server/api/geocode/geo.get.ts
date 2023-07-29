@@ -1,21 +1,38 @@
 import request from '~/server/utils/request';
 import config from '~/config';
 
+/*
+参数接口
+ */
+interface Params {
+	key: string;
+	address: string;
+	city?: string;
+	sig?: string;
+	output?: string;
+	callback?: string;
+}
+
 export default defineEventHandler(async (event) => {
 	const query = getQuery(event);
 
-	const data = await request('/geocode/geo', {
-		params: {
-			key: config.KEY,
-			address: query.address,
-			city: query.city ? query.city : '',
-			sig: query.sig ? query.sig : '',
-			output: query.output ? query.output : '',
-			callback: query.callback ? query.callback : ''
-		}
-	});
+	/*
+	参数检验
+	 */
+	if (!query.address) { return { code: 0, message: '缺少必要参数', data: {} }; }
 
-	return {
-		data: data.data
-	};
+	/*
+	拼接参数
+	 */
+	const params: Params = { key: config.KEY, address: query.address as string, ...query };
+
+	/*
+	发送实际请求
+	 */
+	const data = await request('/geocode/geo', { params });
+
+	/*
+	拼接响应
+	 */
+	return { code: 1, message: 'success', data: data.data };
 });

@@ -28,6 +28,8 @@ export default defineEventHandler(async (event) => {
 	});
 
 	return {
+		code: 1,
+		message: 'success',
 		data: data.data
 	};
 });
