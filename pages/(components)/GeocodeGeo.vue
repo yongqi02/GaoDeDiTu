@@ -198,6 +198,7 @@ let url = ref('http://localhost:3000/api/geocode/geo?address=江苏省南京市�
 		</template>
 	</el-input>
 	<el-empty description="暂无数据" />
+	<JsonVierer :data="responseData"></JsonVierer>
 </div>
 </template>
 
