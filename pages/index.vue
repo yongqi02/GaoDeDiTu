@@ -127,4 +127,7 @@ function handleClick(value: string) {
 	border-radius: 3px;
 	box-shadow: inset 0 0 5px rgba(0,21,41,.05);
 }
+:deep(.el-main) {
+	padding: initial;
+}
 </style>

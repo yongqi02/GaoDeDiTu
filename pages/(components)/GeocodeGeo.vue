@@ -149,44 +149,30 @@ const handleClick = async () => {
 
 let infoDrawer = ref(false);
 
+let isActive = ref('request');
 </script>
 
 <template>
 <div>
-	<el-descriptions
-			class="margin-top"
-			:column="1"
-			border
-			size="large"
-	>
-		<template #title>
-			<el-breadcrumb separator="/">
-				<el-breadcrumb-item>高德地图API</el-breadcrumb-item>
-				<el-breadcrumb-item>位置编码</el-breadcrumb-item>
-				<el-breadcrumb-item>地理编码</el-breadcrumb-item>
-			</el-breadcrumb>
-		</template>
-		<el-descriptions-item>
-			<template #label>
-				<div class="cell-item">
-					<el-icon><Guide /></el-icon>
-					&nbsp;&nbsp;
-					Url
-				</div>
+	<div style="padding: 20px 20px 0 20px; background-color:#fff;">
+		<el-descriptions :column="1">
+			<template #title>
+				<el-breadcrumb separator="/">
+					<el-breadcrumb-item>高德地图API</el-breadcrumb-item>
+					<el-breadcrumb-item>位置编码</el-breadcrumb-item>
+					<el-breadcrumb-item>地理编码</el-breadcrumb-item>
+				</el-breadcrumb>
+				<div class="title">地理编码</div>
 			</template>
-			http://localhost:3000/api/geocode/geo?params
-		</el-descriptions-item>
-		<el-descriptions-item>
-			<template #label>
-				<div class="cell-item">
-					<el-icon><CoffeeCup /></el-icon>
-					&nbsp;&nbsp;
-					Method
-				</div>
-			</template>
-			GET
-		</el-descriptions-item>
-	</el-descriptions>
+			<el-descriptions-item label="Url: ">http://localhost:3000/api/geocode/geo?params</el-descriptions-item>
+			<el-descriptions-item label="Method: ">GET</el-descriptions-item>
+		</el-descriptions>
+	</div>
+	<el-tabs v-model="isActive" @tab-click="handleClick">
+		<el-tab-pane label="请求参数" name="request">User</el-tab-pane>
+		<el-tab-pane label="响应参数" name="response">Config</el-tab-pane>
+		<el-tab-pane label="接口测试" name="test">Role</el-tab-pane>
+	</el-tabs>
 	<el-divider content-position="left">请求参数</el-divider>
 	<client-only>
 		<el-table :data="requestData" border style="width: 100%">
@@ -241,5 +227,17 @@ let infoDrawer = ref(false);
 }
 :deep(.el-divider__text) {
 	background-color: #f0f9ff!important;
+}
+.title {
+	margin-right: 12px;
+	margin-bottom: 0;
+	margin-top: 8px;
+	color: rgba(0, 0, 0, 0.85);
+	font-weight: 600;
+	font-size: 20px;
+	line-height: 32px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 </style>
