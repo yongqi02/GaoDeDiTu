@@ -2,9 +2,10 @@
 import {
 	Guide,
 	CoffeeCup,
-	Search
+	Pointer
 } from '@element-plus/icons-vue';
 import {ref} from 'vue';
+import request from "~/server/utils/request";
 
 const requestData = [
 	{
@@ -131,7 +132,20 @@ const responseData = [
 		]
 	}
 ];
+
 let url = ref('http://localhost:3000/api/geocode/geo?address=江苏省南京市栖霞区文苑路9号');
+
+let isEmpty = ref(true);
+let isLoading = ref(false);
+let data = ref({});
+const handleClick = async () => {
+	isLoading.value = true;
+	const temp = await request(url.value);
+	isLoading.value = false;
+	data.value = temp.data;
+	isEmpty.value = false;
+}
+
 </script>
 
 <template>
@@ -157,7 +171,7 @@ let url = ref('http://localhost:3000/api/geocode/geo?address=江苏省南京市�
 					Url
 				</div>
 			</template>
-			http://localhost:4000/api/geocode/geo?params
+			http://localhost:3000/api/geocode/geo?params
 		</el-descriptions-item>
 		<el-descriptions-item>
 			<template #label>
@@ -194,11 +208,11 @@ let url = ref('http://localhost:3000/api/geocode/geo?address=江苏省南京市�
 			class="input-with-select"
 	>
 		<template #append>
-			<el-button :icon="Search" />
+			<el-button :icon="Pointer" @click="handleClick"/>
 		</template>
 	</el-input>
-	<el-empty description="暂无数据" />
-	<JsonVierer :data="responseData"></JsonVierer>
+	<el-empty description="暂无数据" v-if="isEmpty"/>
+	<JsonVierer :data="data.data" v-if="!isEmpty" v-loading="isLoading"></JsonVierer>
 </div>
 </template>
 
