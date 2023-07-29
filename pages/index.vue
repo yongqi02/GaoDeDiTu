@@ -12,6 +12,7 @@ import {
 } from '@element-plus/icons-vue';
 import { ref } from 'vue';
 import GeocodeGeo from "~/pages/(components)/GeocodeGeo.vue";
+import GeocodeRegeo from "~/pages/(components)/GeocodeRegeo.vue";
 
 let isShow = ref('0');
 
@@ -91,6 +92,7 @@ function handleClick(value: string) {
 			<el-container>
 				<el-main class="bg-sky-50 min-h-screen">
 					<GeocodeGeo v-if="isShow === '1-1'"/>
+					<GeocodeRegeo v-if="isShow === '1-2'"/>
 				</el-main>
 				<el-footer class="bg-sky-600">Footer</el-footer>
 			</el-container>
