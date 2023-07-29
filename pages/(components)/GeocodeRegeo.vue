@@ -5,23 +5,49 @@ import {
 import {ref} from 'vue';
 import request from "~/server/utils/request";
 import InfoTable from "~/components/InfoTable.vue";
+import PageFooter from "~/components/PageFooter.vue";
 
 const requestData = [
 	{
-		name: 'address',
-		meaning: '结构化地址信息',
-		description: '规则遵循：国家、省份、城市、区县、城镇、乡村、街道、门牌号码、屋邨、大厦，如：北京市朝阳区阜通东大街6号。',
+		name: 'location',
+		meaning: '经纬度坐标',
+		description: '传入内容规则：经度在前，纬度在后，经纬度间以“,”分割，经纬度小数点后不要超过 6 位。',
 		must: '必需',
 		default: '无'
 	},
 	{
-		name: 'city',
-		meaning: '指定查询的城市',
-		description: '可选输入内容包括：指定城市的中文（如北京）、指定城市的中文全拼（beijing）、citycode（010）、adcode（110000），不支持县级市。当指定城市查询内容为空时，会进行全国范围内的地址转换检索。\n' +
-				'\n' +
-				'adcode信息可参考城市编码表获取',
+		name: 'poitype',
+		meaning: '返回附近POI类型',
+		description: '以下内容需要 extensions 参数为 all 时才生效。逆地理编码在进行坐标解析之后不仅可以返回地址描述，也可以返回经纬度附近符合限定要求的POI内容（在 extensions 字段值为 all 时才会返回POI内容）。设置 POI 类型参数相当于为上述操作限定要求。参数仅支持传入POI TYPECODE，可以传入多个POI TYPECODE，相互之间用“|”分隔。获取 POI TYPECODE 可以参考POI分类码表',
 		must: '可选',
 		default: '无，会进行全国范围内搜索'
+	},
+	{
+		name: 'radius',
+		meaning: '搜索半径',
+		description: 'radius取值范围在0~3000，默认是1000。单位：米',
+		must: '可选',
+		default: '1000'
+	},
+	{
+		name: 'extensions',
+		meaning: '返回结果控制',
+		description: 'extensions 参数默认取值是 base，也就是返回基本地址信息；\n' +
+				'\n' +
+				'extensions 参数取值为 all 时会返回基本地址信息、附近 POI 内容、道路信息以及道路交叉口信息。',
+		must: '可选',
+		default: 'base'
+	},
+	{
+		name: 'roadlevel',
+		meaning: '道路等级',
+		description: '以下内容需要 extensions 参数为 all 时才生效。\n' +
+				'\n' +
+				'可选值：0，1\n' +
+				'当roadlevel=0时，显示所有道路\n' +
+				'当roadlevel=1时，过滤非主干道路，仅输出主干道路数据 ',
+		must: '可选',
+		default: '无'
 	},
 	{
 		name: 'sig',
@@ -44,6 +70,21 @@ const requestData = [
 		must: '可选',
 		default: '无'
 	},
+	{
+		name: 'homeorcorp',
+		meaning: '是否优化POI返回顺序',
+		description: '以下内容需要 extensions 参数为 all 时才生效。\n' +
+				'\n' +
+				'homeorcorp 参数的设置可以影响召回 POI 内容的排序策略，目前提供三个可选参数：\n' +
+				'\n' +
+				'0：不对召回的排序策略进行干扰。\n' +
+				'\n' +
+				'1：综合大数据分析将居家相关的 POI 内容优先返回，即优化返回结果中 pois 字段的poi顺序。\n' +
+				'\n' +
+				'2：综合大数据分析将公司相关的 POI 内容优先返回，即优化返回结果中 pois 字段的poi顺序。',
+		must: '可选',
+		default: '0'
+	}
 ];
 
 const responseData = [
@@ -53,26 +94,85 @@ const responseData = [
 		description: '返回值为 0 或 1，0 表示请求失败；1 表示请求成功。',
 	},
 	{
-		name: 'count',
-		meaning: '返回结果数目',
-		description: '返回结果的个数',
-	},
-	{
 		name: 'info',
 		meaning: '返回状态说明',
 		description: '当 status 为 0 时，info 会返回具体错误原因，否则返回“OK”。',
 	},
 	{
 		id: 4,
-		name: 'geocodes',
-		meaning: '地理编码信息列表',
-		description: '结果对象列表，包括下述字段：',
+		name: 'regeocode',
+		meaning: '逆地理编码信息列表',
+		description: '返回 regeocode 对象；regeocode 对象包含的数据如下：',
 		children: [
 			{
 				id: 41,
-				name: 'country',
-				meaning: '国家',
-				description: '国内地址默认返回中国'
+				name: 'addressComponent',
+				meaning: '地址元素列表',
+				description: '',
+				children: [
+					{
+						id: 411,
+						name: 'province',
+						meaning: '坐标点所在省名称',
+						description: '例如：北京市'
+					},
+					{
+						id: 412,
+						name: 'city',
+						meaning: '坐标点所在城市名称',
+						description: '请注意：当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为空；省直辖县列表'
+					},
+					{
+						id: 413,
+						name: 'citycode',
+						meaning: '城市编码',
+						description: '例如：010'
+					},
+					{
+						id: 414,
+						name: 'district',
+						meaning: '坐标点所在区',
+						description: '例如：海淀区'
+					},
+					{
+						id: 415,
+						name: 'adcode',
+						meaning: '行政区编码',
+						description: '例如：110108'
+					},
+					{
+						id: 416,
+						name: 'township',
+						meaning: '坐标点所在乡镇/街道（此街道为社区街道，不是道路信息）',
+						description: '例如：燕园街道'
+					},
+					{
+						id: 417,
+						name: 'towncode',
+						meaning: '乡镇街道编码',
+						description: '例如：110101001000'
+					},
+					{
+						id: 418,
+						name: 'neighborhood',
+						meaning: '社区信息列表',
+						description: '',
+						children: [
+							{
+								id: 4181,
+								name: 'name',
+								meaning: '社区名称',
+								description: '例如：北京大学'
+							},
+							{
+								id: 4182,
+								name: 'type',
+								meaning: 'POI类型',
+								description: '例如：科教文化服务;学校;高等院校'
+							},
+						]
+					},
+				]
 			},
 			{
 				id: 42,
@@ -165,7 +265,7 @@ console.log(`isEmpty: ${isEmpty.value}`)
 					</el-breadcrumb>
 					<div class="title">地理编码</div>
 				</template>
-				<el-descriptions-item label="Url: ">http://localhost:3000/api/geocode/geo?params</el-descriptions-item>
+				<el-descriptions-item label="Url: ">http://localhost:3000/api/geocode/regeo?params</el-descriptions-item>
 				<el-descriptions-item label="Method: ">GET</el-descriptions-item>
 			</el-descriptions>
 		</div>
@@ -214,14 +314,7 @@ console.log(`isEmpty: ${isEmpty.value}`)
 				<JsonVierer :data="data.data" v-if="!isEmpty" v-loading="isLoading"></JsonVierer>
 			</el-tab-pane>
 		</el-tabs>
-		<div style="width: 100%; display: flex; justify-content: center;" class="footer">
-			<el-space direction="vertical">
-				<el-text>
-					<el-text>高德地图 Api Hub</el-text>
-				</el-text>
-				<el-text>交流QQ群：123456</el-text>
-			</el-space>
-		</div>
+		<PageFooter />
 		<el-drawer v-model="infoDrawer" size="50%">
 			<template #header>
 				<h4>Info状态表</h4>

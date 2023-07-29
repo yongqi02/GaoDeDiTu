@@ -5,6 +5,7 @@ import {
 import {ref} from 'vue';
 import request from "~/server/utils/request";
 import InfoTable from "~/components/InfoTable.vue";
+import PageFooter from "~/components/PageFooter.vue";
 
 const requestData = [
 	{
@@ -64,7 +65,7 @@ const responseData = [
 	},
 	{
 		id: 4,
-		name: 'geocodes',
+		name: 'geocode',
 		meaning: '地理编码信息列表',
 		description: '结果对象列表，包括下述字段：',
 		children: [
@@ -214,14 +215,7 @@ console.log(`isEmpty: ${isEmpty.value}`)
 			<JsonVierer :data="data.data" v-if="!isEmpty" v-loading="isLoading"></JsonVierer>
 		</el-tab-pane>
 	</el-tabs>
-	<div style="width: 100%; display: flex; justify-content: center;" class="footer">
-		<el-space direction="vertical">
-			<el-text>
-				<el-text>高德地图 Api Hub</el-text>
-			</el-text>
-			<el-text>交流QQ群：123456</el-text>
-		</el-space>
-	</div>
+	<PageFooter />
 	<el-drawer v-model="infoDrawer" size="50%">
 		<template #header>
 			<h4>Info状态表</h4>
