@@ -52,11 +52,11 @@ const tableData = [
 </script>
 
 <template>
-	<el-table :data="tableData" style="width: 100%">
+	<el-table :data="tableData" style="width: 100%;">
 		<el-table-column fixed prop="code" label="info码" width="150" />
 		<el-table-column prop="returnValue" label="返回值" width="120" />
 		<el-table-column prop="description" label="描述" width="120" />
-		<el-table-column prop="resolution" label="可能解决方案" width="120" />
+		<el-table-column prop="resolution" label="可能解决方案" />
 	</el-table>
 </template>
 

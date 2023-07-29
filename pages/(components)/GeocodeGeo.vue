@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import {
-	Guide,
-	CoffeeCup,
 	Pointer
 } from '@element-plus/icons-vue';
 import {ref} from 'vue';
@@ -140,6 +138,7 @@ let isEmpty = ref(true);
 let isLoading = ref(false);
 let data = ref({});
 const handleClick = async () => {
+	console.log('发送请求');
 	isLoading.value = true;
 	const temp = await request(url.value);
 	isLoading.value = false;
@@ -150,6 +149,8 @@ const handleClick = async () => {
 let infoDrawer = ref(false);
 
 let isActive = ref('request');
+
+console.log(`isEmpty: ${isEmpty.value}`)
 </script>
 
 <template>
@@ -169,47 +170,96 @@ let isActive = ref('request');
 		</el-descriptions>
 	</div>
 	<el-tabs v-model="isActive" @tab-click="handleClick">
-		<el-tab-pane label="请求参数" name="request">User</el-tab-pane>
-		<el-tab-pane label="响应参数" name="response">Config</el-tab-pane>
-		<el-tab-pane label="接口测试" name="test">Role</el-tab-pane>
-	</el-tabs>
-	<el-divider content-position="left">请求参数</el-divider>
-	<client-only>
-		<el-table :data="requestData" border style="width: 100%">
-			<el-table-column prop="name" label="参数名" width="180" />
-			<el-table-column prop="meaning" label="含义" width="180" />
-			<el-table-column prop="description" label="描述" />
-			<el-table-column prop="must" label="是否必填" width="180"/>
-			<el-table-column prop="default" label="默认" width="180"/>
-		</el-table>
-	</client-only>
-	<el-divider content-position="left">响应参数</el-divider>
-	<client-only>
-		<el-table :data="responseData" border style="width: 100%" row-key="id">
-			<el-table-column prop="name" label="参数名" width="180" />
-			<el-table-column prop="meaning" label="含义" width="180" />
-			<el-table-column prop="description" label="描述">
-				<template #default="scope">
-					<div>
-						{{ scope.row.description }}
-						<el-button v-if="scope.row.name === 'info'" @click="infoDrawer = true">详情可以查询info状态表</el-button>
-					</div>
+		<el-tab-pane label="请求参数" name="request" style="padding: 0 20px;">
+			<client-only>
+				<el-table :data="requestData" border style="width: 100%">
+					<el-table-column prop="name" label="参数名" width="180" />
+					<el-table-column prop="meaning" label="含义" width="180" />
+					<el-table-column prop="description" label="描述" />
+					<el-table-column prop="must" label="是否必填" width="180"/>
+					<el-table-column prop="default" label="默认" width="180"/>
+				</el-table>
+			</client-only>
+		</el-tab-pane>
+		<el-tab-pane label="响应参数" name="response" style="padding: 0 20px;">
+			<client-only>
+				<el-table :data="responseData" border style="width: 100%" row-key="id">
+					<el-table-column prop="name" label="参数名" width="180" />
+					<el-table-column prop="meaning" label="含义" width="180" />
+					<el-table-column prop="description" label="描述">
+						<template #default="scope">
+							<div>
+								{{ scope.row.description }}
+								<div v-if="scope.row.name === 'info'">
+									详情可以
+									<el-button @click="infoDrawer = true" type="primary" size="small">查询</el-button>
+									info状态表
+								</div>
+							</div>
+						</template>
+					</el-table-column>
+				</el-table>
+			</client-only>
+		</el-tab-pane>
+		<el-tab-pane label="接口测试" name="test" style="padding: 0 20px;">
+			<el-input
+					v-model="url"
+					class="input-with-select"
+			>
+				<template #append>
+					<el-button :icon="Pointer" @click="handleClick"/>
 				</template>
-			</el-table-column>
-		</el-table>
-	</client-only>
-	<el-divider content-position="left">在线测试</el-divider>
-	<el-input
-			v-model="url"
-			class="input-with-select"
-	>
-		<template #append>
-			<el-button :icon="Pointer" @click="handleClick"/>
-		</template>
-	</el-input>
-	<el-empty description="暂无数据" v-if="isEmpty"/>
-	<JsonVierer :data="data.data" v-if="!isEmpty" v-loading="isLoading"></JsonVierer>
-	<el-drawer v-model="infoDrawer">
+			</el-input>
+			<el-empty description="暂无数据" v-if="isEmpty"/>
+			<JsonVierer :data="data.data" v-if="!isEmpty" v-loading="isLoading"></JsonVierer>
+		</el-tab-pane>
+	</el-tabs>
+	<div style="width: 100%; display: flex; justify-content: center;" class="footer">
+		<el-space direction="vertical">
+			<el-text>
+				<el-text>高德地图 Api Hub</el-text>
+			</el-text>
+			<el-text>交流QQ群：123456</el-text>
+		</el-space>
+	</div>
+
+<!--	<el-divider content-position="left">请求参数</el-divider>-->
+<!--	<client-only>-->
+<!--		<el-table :data="requestData" border style="width: 100%">-->
+<!--			<el-table-column prop="name" label="参数名" width="180" />-->
+<!--			<el-table-column prop="meaning" label="含义" width="180" />-->
+<!--			<el-table-column prop="description" label="描述" />-->
+<!--			<el-table-column prop="must" label="是否必填" width="180"/>-->
+<!--			<el-table-column prop="default" label="默认" width="180"/>-->
+<!--		</el-table>-->
+<!--	</client-only>-->
+<!--	<el-divider content-position="left">响应参数</el-divider>-->
+<!--	<client-only>-->
+<!--		<el-table :data="responseData" border style="width: 100%" row-key="id">-->
+<!--			<el-table-column prop="name" label="参数名" width="180" />-->
+<!--			<el-table-column prop="meaning" label="含义" width="180" />-->
+<!--			<el-table-column prop="description" label="描述">-->
+<!--				<template #default="scope">-->
+<!--					<div>-->
+<!--						{{ scope.row.description }}-->
+<!--						<el-button v-if="scope.row.name === 'info'" @click="infoDrawer = true">详情可以查询info状态表</el-button>-->
+<!--					</div>-->
+<!--				</template>-->
+<!--			</el-table-column>-->
+<!--		</el-table>-->
+<!--	</client-only>-->
+<!--	<el-divider content-position="left">在线测试</el-divider>-->
+<!--	<el-input-->
+<!--			v-model="url"-->
+<!--			class="input-with-select"-->
+<!--	>-->
+<!--		<template #append>-->
+<!--			<el-button :icon="Pointer" @click="handleClick"/>-->
+<!--		</template>-->
+<!--	</el-input>-->
+<!--	<el-empty description="暂无数据" v-if="isEmpty"/>-->
+<!--	<JsonVierer :data="data.data" v-if="!isEmpty" v-loading="isLoading"></JsonVierer>-->
+	<el-drawer v-model="infoDrawer" size="50%">
 		<template #header>
 			<h4>Info状态表</h4>
 		</template>
@@ -239,5 +289,16 @@ let isActive = ref('request');
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+}
+:deep(.el-tabs__nav-scroll) {
+	background-color: #fff;
+	padding: 0 20px;
+}
+.footer {
+	color: rgba(0,0,0,.85);
+	font-size: 14px;
+	margin: 48px 0 24px;
+	padding: 0 16px;
+	text-align: center;
 }
 </style>
