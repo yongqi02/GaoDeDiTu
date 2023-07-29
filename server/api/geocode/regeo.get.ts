@@ -6,11 +6,15 @@ import config from '~/config';
  */
 interface Params {
 	key: string;
-	address: string;
-	city?: string;
+	location: string;
+	poitype?: string;
+	radius?: string;
+	extensions?: string;
+	roadlevel?: string;
 	sig?: string;
 	output?: string;
 	callback?: string;
+	homeorcorp?: string
 }
 
 /**
@@ -20,7 +24,7 @@ export default defineEventHandler(async (event) => {
 	// 获取请求参数
 	const query = getQuery(event);
 	// 检验参数
-	if (!query.address) {
+	if (!query.location) {
 		return {
 			code: 0,
 			message: '缺少必要参数',
@@ -30,11 +34,11 @@ export default defineEventHandler(async (event) => {
 	// 拼接参数
 	const params: Params = {
 		key: config.KEY,
-		address: query.address as string,
+		location: query.location as string,
 		...query
 	}
 	// 发起实际请求
-	const data = await request('/geocode/geo', {
+	const data = await request('/geocode/regeo', {
 		params
 	});
 	// 拼接响应

@@ -264,4 +264,7 @@ console.log(`isEmpty: ${isEmpty.value}`)
 	padding: 0 16px;
 	text-align: center;
 }
+:deep(.el-table--fit) {
+	border-radius: 10px;
+}
 </style>

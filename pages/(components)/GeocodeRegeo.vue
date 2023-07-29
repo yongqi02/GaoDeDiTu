@@ -132,7 +132,7 @@ const responseData = [
 	}
 ];
 
-let url = ref('http://localhost:3000/api/geocode/geo?address=江苏省南京市栖霞区文苑路9号');
+let url = ref('http://localhost:3000/api/geocode/regeo?location=118.931191,32.112742');
 
 let isEmpty = ref(true);
 let isLoading = ref(false);
@@ -263,5 +263,8 @@ console.log(`isEmpty: ${isEmpty.value}`)
 	margin: 48px 0 24px;
 	padding: 0 16px;
 	text-align: center;
+}
+:deep(.el-table--fit) {
+	border-radius: 10px;
 }
 </style>

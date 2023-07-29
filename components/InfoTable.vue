@@ -1,8 +1,4 @@
 <script setup lang="ts">
-const handleClick = () => {
-	console.log('click')
-}
-
 const tableData = [
 	{
 		code: '10000',
